@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp
+spec:
+  type: LoadBalancer
+  selector:
+    app: aspkube
+  ports:
+    - name: "http"
+      port: 80
+      targetPort: 80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aspkube
+  template:
+    metadata:
+      labels:
+        app: aspkube
+    spec:
+      containers:
+        - name: aspkube
+          image: potatomaster101/aspkube:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
